@@ -17,6 +17,7 @@ import (
 	"io"
 	"math/big"
 
+	"github.com/Hyperledger-TWGC/tjfoc-gm/sm2"
 	x509GM "github.com/Hyperledger-TWGC/tjfoc-gm/x509"
 	"github.com/golang/protobuf/proto"
 	cb "github.com/hyperledger/fabric-protos-go/common"
@@ -68,6 +69,8 @@ func (s *SigningIdentity) Sign(reader io.Reader, msg []byte, opts crypto.SignerO
 		)
 
 		return asn1.Marshal(sig)
+	case *sm2.PrivateKey:
+		return pk.Sign(rand.Reader, msg, opts)
 	default:
 		return nil, fmt.Errorf("signing with private key of type %T not supported", pk)
 	}
